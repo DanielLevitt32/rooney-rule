@@ -5,14 +5,14 @@ $(document).ready(function() {
 //Pin the width and height to the .chart div
 var margin = {
         top: 20,
-        right: 80,
+        right: 125,
         bottom: 30,
         left: 50
     },
     width = $(".chart").width() - margin.left - margin.right,
     height = $(".chart").height() - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%Y-%m-%d").parse;
+var parseDate = d3.time.format("%Y").parse;
 
 var x = d3.time.scale()
     .range([0, width]);
@@ -38,7 +38,7 @@ var line = d3.svg.line()
         return x(d.date);
     })
     .y(function(d) {
-        return y(d.rate);
+        return y(d.year);
     });
 
 var svg = d3.select(".chart").append("svg")
@@ -52,29 +52,28 @@ var svg = d3.select(".chart").append("svg")
 //Our data comes with the values on the left. We use a key to get the corresponding value:
 //Ex.: `labels["CLMUR"]` => "Columbia, Mo."
 var labels = {
-  "UNRATE" : "U.S.",
-  "MOUR" : "Missouri",
-  "CLMUR" : "Columbia, Mo."
+  "HC" : "Head Coaches",
+  "OC" : "Offensive Coordinators",
+  "DC" : "Defensive Coordinators",
+  "TOTAL" : "Total"
 }
 
-
-
-d3.tsv("data/us_mo_co_unemployment.tsv", function(error, data) {
+d3.tsv("data/rooney-rule.tsv", function(error, data) {
     if (error) throw error;
 
     var colorDomain = d3.keys(
             data[0]).filter(
             function(key) {
-                return key !== "observation_date";
-            }
+                return key !== "year";
+           }
         )
         //pass that to our color scale
     color.domain(colorDomain);
 
     //Create new property called "date" for each row.
-    //assign it the value of d.observation_date after it's been formatted. 
+    //assign it the value of d.year after it's been formatted. 
     data.forEach(function(d) {
-        d.date = parseDate(d.observation_date);
+        d.date = parseDate(d.year);
     });
 
     //color.domain is an array of our column headers (but not "date")
@@ -86,7 +85,7 @@ d3.tsv("data/us_mo_co_unemployment.tsv", function(error, data) {
             values: data.map(function(d) {
                 return {
                     date: d.date,
-                    rate: +d[name],
+                    year: +d[name],
                     name : labels[name] //I've added the name to each object, so we can use it in our tooltips.
                 };
             })
@@ -106,7 +105,7 @@ d3.tsv("data/us_mo_co_unemployment.tsv", function(error, data) {
         0,
         d3.max(places, function(c) {
             return d3.max(c.values, function(v) {
-                return v.rate;
+                return v.year;
             });
         })
     ]);
@@ -131,7 +130,7 @@ d3.tsv("data/us_mo_co_unemployment.tsv", function(error, data) {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Unemployment Rate");
+        .text("No. of Minority Coaches");
 
     var city = svg.selectAll(".city")
         .data(places)
@@ -155,7 +154,7 @@ d3.tsv("data/us_mo_co_unemployment.tsv", function(error, data) {
             };
         })
         .attr("transform", function(d) {
-            return "translate(" + x(d.value.date) + "," + y(d.value.rate) + ")";
+            return "translate(" + x(d.value.date) + "," + y(d.value.year) + ")";
         })
         .attr("x", 3)
         .attr("dy", ".35em")
@@ -194,21 +193,21 @@ d3.tsv("data/us_mo_co_unemployment.tsv", function(error, data) {
             return x(d.date); //Position accordingly.
         })
         .attr("cy", function(d) {
-            return y(d.rate); //Position accordingly.
+            return y(d.year); //Position accordingly.
         })
         .attr("r", 5)
         .on("mouseover", function(d) {
 
             //We're using the Moment.js library to get a month and year for our tooltip.
             //We're using Moment.js because our dates are in the js date format.
-            var displayDate = moment(d.date).format("MMM. YYYY");
-            var displayVal = d.rate+"%";
+            var displayDate = moment(d.date).format("YYYY");
+            var displayVal = d.year+"";
 
             //Append the values to the tooltip with some markup.
             $(".tt").html(
               "<div class='name'>"+d.name+"</div>"+
               "<div class='date'>"+displayDate+": </div>"+
-              "<div class='rate'>"+displayVal+"</div>"
+              "<div class='year'>"+displayVal+"</div>"
             )
 
             //Show the tooltip.
@@ -237,7 +236,7 @@ d3.tsv("data/us_mo_co_unemployment.tsv", function(error, data) {
         .on("mouseout", function(d) {
             //Turn this dot's opacity back to 0
             //And hide the tooltip.
-            d3.select(this).style("opacity", 0);
+            d3.select(this).style("opacity", 5);
             $(".tt").hide();
         })
 

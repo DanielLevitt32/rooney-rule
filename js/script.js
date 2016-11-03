@@ -47,7 +47,6 @@ var svg = d3.select(".chart").append("svg")
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
 //This is a dictionary object we'll use to get plain language labels.
 //Our data comes with the values on the left. We use a key to get the corresponding value:
 //Ex.: `labels["CLMUR"]` => "Columbia, Mo."
@@ -115,7 +114,6 @@ d3.tsv("data/rooney-rule.tsv", function(error, data) {
 
     console.log(total, string);
 
-
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -161,9 +159,6 @@ d3.tsv("data/rooney-rule.tsv", function(error, data) {
         .text(function(d) {
             return labels[d.name];
         });
-
-
-
 
     /* --------------- */
     /* This is the tooltip logic. */
@@ -242,10 +237,5 @@ d3.tsv("data/rooney-rule.tsv", function(error, data) {
 
     
 });
-
-
-
-
-
 
 

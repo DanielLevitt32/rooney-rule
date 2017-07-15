@@ -1,1 +1,1 @@
-<img src="/images/rooney-rule-lines.png link">
+<img src="/rooney-rule-lines.png link">

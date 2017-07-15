@@ -1,1 +1,1 @@
-<img src="/2016/NewsDev/RooneyRule/images/rooney-rule-lines.png link">
+<img src="/NewsDev/RooneyRule/images/rooney-rule-lines.png link">
